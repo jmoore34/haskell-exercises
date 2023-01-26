@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
-module Traversable  () where
+module Typeclasses.Traversable  () where
 import Prelude hiding (mapM, traverse, sequence, sequenceA, Traversable)
 
 class (Functor t, Foldable t) => Traversable t where

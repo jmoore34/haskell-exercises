@@ -1,4 +1,4 @@
-module Foldable () where
+module Typeclasses.Foldable () where
 
 import Prelude hiding (foldr, foldl, Foldable)
 

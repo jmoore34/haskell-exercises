@@ -25,9 +25,22 @@ source-repository head
 
 library
   exposed-modules:
-      Foldable
+      Functions
       Lib
-      Traversable
+      Monads.Identity
+      Monads.Maybe
+      Monads.Reader
+      Monads.State
+      Monads.Writer
+      MonadTransformers.IdentityT
+      MonadTransformers.MaybeT
+      MonadTransformers.ReaderT
+      MonadTransformers.StateT
+      MonadTransformers.WriterT
+      Typeclasses.Foldable
+      Typeclasses.Monad
+      Typeclasses.Monoid
+      Typeclasses.Traversable
   other-modules:
       Paths_exercises
   hs-source-dirs:
