@@ -39,15 +39,21 @@ library
       MonadTransformers.WriterT
       Typeclasses.Foldable
       Typeclasses.Monad
+      Typeclasses.MonadIO
+      Typeclasses.MonadTrans
       Typeclasses.Monoid
       Typeclasses.Traversable
   other-modules:
       Paths_exercises
   hs-source-dirs:
       src
+  default-extensions:
+      InstanceSigs
+      QuantifiedConstraints
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , transformers
   default-language: Haskell2010
 
 executable exercises-exe
@@ -56,10 +62,14 @@ executable exercises-exe
       Paths_exercises
   hs-source-dirs:
       app
+  default-extensions:
+      InstanceSigs
+      QuantifiedConstraints
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , exercises
+    , transformers
   default-language: Haskell2010
 
 test-suite exercises-test
@@ -69,8 +79,12 @@ test-suite exercises-test
       Paths_exercises
   hs-source-dirs:
       test
+  default-extensions:
+      InstanceSigs
+      QuantifiedConstraints
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , exercises
+    , transformers
   default-language: Haskell2010

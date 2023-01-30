@@ -1,4 +1,6 @@
 module MonadTransformers.IdentityT () where
+import Control.Monad.Trans.Class (MonadTrans (lift))
+import Control.Monad.IO.Class (MonadIO (liftIO))
 
 -- IdentityT :: (* -> *) -> * -> *
 newtype IdentityT m a = IdentityT { runIdentityT :: m a }
@@ -20,3 +22,15 @@ instance Monad m => Monad (IdentityT m) where
     IdentityT ma >>= f = IdentityT $
         ma >>= \a ->
             runIdentityT $ f a
+
+-- MonadTrans :: (* -> *) -> * -> -> * -> Constraint
+-- IdentityT  :: (* -> *) -> * -> -> *
+instance MonadTrans IdentityT where
+    lift :: (Monad m) => m a -> IdentityT m a
+    lift = IdentityT
+
+-- MonadIO ::               (* -> *) -> Constraint
+-- IdentityT  :: (* -> *) -> * -> *
+instance (MonadIO m) => MonadIO (IdentityT m) where
+    liftIO :: IO a -> IdentityT m a
+    liftIO = lift . liftIO

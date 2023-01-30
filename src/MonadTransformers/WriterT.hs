@@ -1,4 +1,6 @@
 module MonadTransformers.WriterT () where
+import Control.Monad.Trans.Class (MonadTrans (lift))
+import Control.Monad.IO.Class (MonadIO (liftIO))
 
 
 -- WriterT :: * -> (* -> *) -> * -> *
@@ -29,3 +31,18 @@ instance (Monad m, Monoid w) => Monad (WriterT w m) where
 
 tell' :: Monad m => w -> WriterT w m ()
 tell' w = WriterT $ return ((), w)
+
+-- MonadTrans  ::      ((* -> *) -> * -> *) -> Constraint
+-- WriterT     :: * -> (* -> *) -> * -> *)
+-- (WriterT w) ::      (* -> *) -> * -> *))
+instance (Monoid w) => MonadTrans (WriterT w) where
+    lift :: (Monad m) => m a -> WriterT w m a
+    lift mA = WriterT $
+        mA >>= \a ->
+            pure (a, mempty)
+
+-- MonadIO ::                 (* -> *) -> Constraint
+-- WriterT :: * -> (* -> *) -> * -> *
+instance (Monoid w, MonadIO m) => MonadIO (WriterT w m) where
+    liftIO :: IO a -> WriterT w m a
+    liftIO = lift . liftIO

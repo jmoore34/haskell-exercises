@@ -1,4 +1,6 @@
 module MonadTransformers.StateT () where
+import Control.Monad.Trans.Class (MonadTrans (lift))
+import Control.Monad.IO.Class (MonadIO (liftIO))
 
 -- StateT :: * -> (* -> *) -> * -> *
 newtype StateT s m a = StateT { runStateT :: s -> m (a, s)}
@@ -33,3 +35,23 @@ get' = StateT $ \s -> return (s,s)
 
 put' :: Monad m => s -> StateT s m ()
 put' s = StateT $ \_ -> return ((),s)
+
+-- MonadTrans :: ((* -> *) -> * -> *) -> Constraint
+-- StateT :: * -> (* -> *) -> * -> *
+-- (StateT s) ::  (* -> *) -> * -> *
+instance MonadTrans (StateT s) where
+    lift :: (Monad m) => m a -> StateT s m a
+    lift ma = StateT $ \s ->
+        ma >>= \a ->
+            pure (a, s)
+
+-- MonadIO      ::                  (* -> *) -> Constraint
+-- StateT       :: * -> (* -> *) -> * -> *
+-- (StateT s m) ::                  * -> *
+instance (MonadIO m) => MonadIO (StateT s m) where
+    liftIO :: IO a -> StateT s m a
+    -- liftIO = lift . liftIO
+    liftIO ioA =
+        let mA = liftIO ioA
+        in lift mA
+

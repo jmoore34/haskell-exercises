@@ -1,4 +1,6 @@
 module MonadTransformers.ReaderT () where
+import Control.Monad.Trans.Class (MonadTrans (lift))
+import Control.Monad.IO.Class (MonadIO (liftIO))
 
 -- ReaderT :: * -> (* -> *) -> * -> *
 newtype ReaderT e m a = ReaderT { runReaderT :: e -> m a }
@@ -30,3 +32,17 @@ instance Monad m => Monad (ReaderT e m) where
 
 ask' :: Monad m => ReaderT e m e
 ask' = ReaderT $ \e -> return e
+
+-- ReaderT    :: * -> (* -> *) -> * -> *
+-- MonadTrans :: (* -> *) -> * -> * -> Constraint
+instance MonadTrans (ReaderT e) where
+    lift :: (Monad m) => m a -> ReaderT e m a
+    lift mA = ReaderT $ \e ->
+        mA
+
+-- MonadIO       ::                 (* -> *) -> Constraint
+-- ReaderT       :: * -> (* -> *) -> * -> *
+-- (ReaderT e m) ::                  * -> *
+instance (MonadIO m) => MonadIO (ReaderT e m) where
+    liftIO :: IO a -> ReaderT e m a
+    liftIO = lift . liftIO
