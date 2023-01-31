@@ -42,6 +42,7 @@ library
       Typeclasses.Foldable
       Typeclasses.Monad
       Typeclasses.MonadIO
+      Typeclasses.MonadState
       Typeclasses.MonadTrans
       Typeclasses.Monoid
       Typeclasses.Traversable
@@ -55,6 +56,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , mtl
     , transformers
   default-language: Haskell2010
 
@@ -71,6 +73,7 @@ executable exercises-exe
   build-depends:
       base >=4.7 && <5
     , exercises
+    , mtl
     , transformers
   default-language: Haskell2010
 
@@ -88,5 +91,6 @@ test-suite exercises-test
   build-depends:
       base >=4.7 && <5
     , exercises
+    , mtl
     , transformers
   default-language: Haskell2010

@@ -1,6 +1,7 @@
 module MonadTransformers.StateT () where
 import Control.Monad.Trans.Class (MonadTrans (lift))
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import Control.Monad.State (MonadState (..), put)
 
 -- StateT :: * -> (* -> *) -> * -> *
 newtype StateT s m a = StateT { runStateT :: s -> m (a, s)}
@@ -30,11 +31,11 @@ instance Monad m => Monad (StateT s m) where
         in  m >>= \(a, s1) ->
             runStateT (f a) $ s1
 
-get' :: Monad m => StateT s m s
-get' = StateT $ \s -> return (s,s)
+get :: Monad m => StateT s m s
+get = StateT $ \s -> return (s,s)
 
-put' :: Monad m => s -> StateT s m ()
-put' s = StateT $ \_ -> return ((),s)
+put :: Monad m => s -> StateT s m ()
+put s = StateT $ \_ -> return ((),s)
 
 -- MonadTrans :: ((* -> *) -> * -> *) -> Constraint
 -- StateT :: * -> (* -> *) -> * -> *
@@ -50,8 +51,21 @@ instance MonadTrans (StateT s) where
 -- (StateT s m) ::                  * -> *
 instance (MonadIO m) => MonadIO (StateT s m) where
     liftIO :: IO a -> StateT s m a
-    -- liftIO = lift . liftIO
-    liftIO ioA =
-        let mA = liftIO ioA
-        in lift mA
+    liftIO = lift . liftIO
+    -- liftIO ioA =
+    --     let mA = liftIO ioA
+    --     in lift mA
 
+-- MonadState has two parameters
+-- MonadState :: * -> (* -> *) -> Constraint
+instance (Monad m) => MonadState s (StateT s m) where
+    get :: StateT s m s
+    get = MonadTransformers.StateT.get
+
+    put ::s -> StateT s m ()
+    put = MonadTransformers.StateT.put
+
+    state :: (s -> (a,s)) -> StateT s m a
+    state f = StateT $ \s0 ->
+        let (a1, s1) = f s0
+        in pure (a1, s1)

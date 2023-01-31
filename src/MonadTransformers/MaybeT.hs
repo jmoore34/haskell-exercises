@@ -1,7 +1,9 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use lambda-case" #-}
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
+{-# LANGUAGE UndecidableInstances #-}
 module MonadTransformers.MaybeT () where
+import Control.Monad.State (MonadState (..))
 
 -- MaybeT :: (* -> *) -> * -> *
 newtype MaybeT m a = MaybeT { runMaybeT :: m (Maybe a) }
@@ -81,3 +83,14 @@ readLine2 :: (Read a) => MaybeT IO a
 readLine2 = do
     line <- liftIO getLine
     pure $ read line
+
+-- undecidable instances due to recursive instances
+instance (MonadState s m, MonadTrans t) => MonadState s (t m) where
+    -- get :: t m s
+    -- not to be confused with lift . get
+    -- lift :: m a -> t m a
+    -- fmapping Just over a State/StateT will map over the a part of `-> (a,s)`
+    get = lift get
+
+    -- put :: s -> MaybeT m ()
+    put = lift . put

@@ -53,3 +53,25 @@ liftIO = lift . liftIO
 * In effect, this recursion is
 equivalent to nested calls to `lift`, e.g. `lift . lift . lift ... . lift . id`,
 -- which is what we would do anyway if we wanted to manually lift the IO all the way up
+
+# MonadState
+
+MonadState is just like MonadIO, just instead of liftIO which lifts an `IO a` into an `m a`, we instead have `state` (basically liftState) which lifts a `s -> (a, s)` into an `m a`.
+
+You can then define `get :: m s` and `put :: s -> m ()` in terms of `state`, or the other way around.
+
+The implementation for State and StateT is just:
+```haskell
+get = get
+put = put
+state = State/StateT
+```
+
+and the implementation for the other transformers is just:
+```haskell
+get = lift get       -- get :: m s, lift :: m s -> t m s
+put = lift . put     -- put :: s -> m s, so func. composition needed to apply the s
+state = lift . state -- state :: (s -> (a,s)) -> m a; func. composition applies the function parameter leaving m a
+```
+
+And just like MonadIO, this expands into lift . lift . lift . lift ... get/put/state. Loosely, this will mean a bunch of fmapping over a state function (s -> (a,s)), which will loosely end up with something somewhat like e.g. (s -> (Maybe (Either Err a)), s), but because we're in the outermost transformer (in this case ExceptT), we can bind and get a directly.

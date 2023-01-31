@@ -1,4 +1,9 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use const" #-}
+{-# LANGUAGE TupleSections #-}
 module Monads.State () where
+import Control.Monad.State.Class(get, put, MonadState (state))
+import Control.Monad.State (MonadState)
 
 newtype State s a = State { runState :: s -> (a,s) }
 
@@ -28,5 +33,17 @@ instance Monad (State s) where
 get :: State s s
 get = State $ \s -> (s,s)
 
-set :: s -> State s ()
-set new_state = State $ \_ -> ((),new_state)
+put :: s -> State s ()
+put new_state = State $ \_ -> ((),new_state)
+
+-- MonadState takes two type arguments, s and m
+-- MonadState :: * -> (* -> *) -> Constraint
+instance MonadState s (State s) where
+    get :: State s s
+    get = Monads.State.get
+
+    put :: s -> State s ()
+    put = Monads.State.put
+
+    state :: (s -> (a, s)) -> State s a
+    state = State
