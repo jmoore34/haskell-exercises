@@ -2,7 +2,7 @@ module Typeclasses.MonadIO () where
 
 -- MonadIO :: (* -> *) -> Constraint
 class Monad m => MonadIO m where
-    -- lift :: * -> *
+    -- liftIO :: * -> *
     liftIO :: IO a -> m a
 
 -- MonadIO :: (* -> *) -> Constraint
