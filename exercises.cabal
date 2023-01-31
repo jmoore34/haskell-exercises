@@ -27,11 +27,13 @@ library
   exposed-modules:
       Functions
       Lib
+      Monads.Either
       Monads.Identity
       Monads.Maybe
       Monads.Reader
       Monads.State
       Monads.Writer
+      MonadTransformers.ExceptT
       MonadTransformers.IdentityT
       MonadTransformers.MaybeT
       MonadTransformers.ReaderT
