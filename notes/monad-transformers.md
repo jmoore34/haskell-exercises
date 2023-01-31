@@ -16,6 +16,7 @@ lift = MaybeT . fmap Just
 Monad transformers are monad constructors
 - In e.g. `MaybeT (ReaderT Int IO) a`, the `(ReaderT Int IO)` can be thought of a parameter in a monad constructor
 - Monad is implemented on the *partially applied* `MaybeT m`, meaning we can bind and get directly to a!
+- I.e., `MaybeT (...) a` is just a monad over `a`, with the `(...)` describing what wraps the Maybe
 - e.g. `myA <- liftIO $ getLine`
 - I.e.  `MaybeT (ReaderT Int IO) a` is `<monad, left to right = inner to outer> a`
     - So reading the monad left to right, it’s `IO (Reader Int (Maybe a))`
