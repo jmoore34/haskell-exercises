@@ -42,6 +42,7 @@ library
       Typeclasses.Foldable
       Typeclasses.Monad
       Typeclasses.MonadIO
+      Typeclasses.MonadReader
       Typeclasses.MonadState
       Typeclasses.MonadTrans
       Typeclasses.Monoid

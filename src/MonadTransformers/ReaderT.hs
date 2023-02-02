@@ -1,4 +1,4 @@
-module MonadTransformers.ReaderT () where
+module MonadTransformers.ReaderT (ReaderT(..), ask, local) where
 import Control.Monad.Trans.Class (MonadTrans (lift))
 import Control.Monad.IO.Class (MonadIO (liftIO))
 
@@ -30,13 +30,20 @@ instance Monad m => Monad (ReaderT e m) where
         in  ma >>= \a ->
             runReaderT (f a) $ e
 
-ask' :: Monad m => ReaderT e m e
-ask' = ReaderT $ \e -> return e
+ask :: Monad m => ReaderT e m e
+ask = ReaderT $ \e -> return e
+
+-- like fmapping over the r instead of the a
+-- note that we can't change the type, because the type
+-- r is baked into the monad when we partially apply (Reader r)
+local :: (e -> e) -> ReaderT e m a -> ReaderT e m a
+local f readerT = ReaderT $ \e ->
+    runReaderT readerT (f e)
 
 -- ReaderT    :: * -> (* -> *) -> * -> *
 -- MonadTrans :: (* -> *) -> * -> * -> Constraint
 instance MonadTrans (ReaderT e) where
-    lift :: (Monad m) => m a -> ReaderT e m a
+    lift :: m a -> ReaderT e m a
     lift mA = ReaderT $ \e ->
         mA
 

@@ -54,7 +54,7 @@ liftIO = lift . liftIO
 equivalent to nested calls to `lift`, e.g. `lift . lift . lift ... . lift . id`,
 -- which is what we would do anyway if we wanted to manually lift the IO all the way up
 
-# MonadState
+## MonadState
 
 MonadState is just like MonadIO, just instead of liftIO which lifts an `IO a` into an `m a`, we instead have `state` (basically liftState) which lifts a `s -> (a, s)` into an `m a`.
 
@@ -75,3 +75,13 @@ state = lift . state -- state :: (s -> (a,s)) -> m a; func. composition applies 
 ```
 
 And just like MonadIO, this expands into lift . lift . lift . lift ... get/put/state. Loosely, this will mean a bunch of fmapping over a state function (s -> (a,s)), which will loosely end up with something somewhat like e.g. (s -> (Maybe (Either Err a)), s), but because we're in the outermost transformer (in this case ExceptT), we can bind and get a directly.
+
+## MonadReader
+
+* `reader` is another name for `asks` (`reader :: (r -> a) -> m a`)
+* `local` is like fmap over the `r` ([example](https://hackage.haskell.org/package/mtl-2.3.1/docs/Control-Monad-Reader.html#g:5))
+    * `local :: (r -> r) -> m a -> m a`
+
+A minimal definition of MonadReader consists of:
+1. `ask` or `reader` (which is just `asks`)
+2. `local`
