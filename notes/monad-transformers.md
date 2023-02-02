@@ -76,6 +76,15 @@ state = lift . state -- state :: (s -> (a,s)) -> m a; func. composition applies 
 
 And just like MonadIO, this expands into lift . lift . lift . lift ... get/put/state. Loosely, this will mean a bunch of fmapping over a state function (s -> (a,s)), which will loosely end up with something somewhat like e.g. (s -> (Maybe (Either Err a)), s), but because we're in the outermost transformer (in this case ExceptT), we can bind and get a directly.
 
+In theory, we could implement all the other transformers at once like so by leveraging the MonadTrans constraint:
+
+```haskell
+instance (MonadTrans t, Monad m, Monad (t m), MonadState s m) => MonadState s (t m) where
+    lift  = lift get
+    put   = lift . put
+    state = lift . state
+```
+...but the problem is that StateT also implements `MonadTrans`, and so this would create overlapping implementations. This is why `mtl` has a bunch of implementations that are identical.
 ## MonadReader
 
 * `reader` is another name for `asks` (`reader :: (r -> a) -> m a`)
