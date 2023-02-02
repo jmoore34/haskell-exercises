@@ -6,7 +6,8 @@ import qualified Monads.Reader as Reader
 import MonadTransformers.ReaderT(ReaderT)
 import qualified MonadTransformers.ReaderT as ReaderT
 import Typeclasses.MonadTrans
-import MonadTransformers.MaybeT (MaybeT, lift)
+import MonadTransformers.MaybeT
+
 
 -- typeclass w/ two type variables that it relates together
 -- namely, m is uniquely determined/dependent on e, because
@@ -43,11 +44,15 @@ instance (Monad m) => MonadReader e (ReaderT e m) where
 
 -- for all other transformers:
 -- instance (MonadTrans t, Monad m, Monad (t m), MonadReader e m) => MonadReader e (t m) where
+-- but this would cause overlapping instances
 
 -- e.g. MaybeT
 instance (MonadReader e m) => MonadReader e (MaybeT m) where
     ask :: MaybeT m e
     ask = lift ask
 
+    -- local is like fmap, but over the environment e rather than the result value a
     local :: (e -> e) -> MaybeT m a -> MaybeT m a
-    local = undefined --todo
+    local f = MaybeT . (local f) . runMaybeT
+
+-- similar implementation for other monad transformers

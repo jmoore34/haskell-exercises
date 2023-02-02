@@ -85,3 +85,5 @@ And just like MonadIO, this expands into lift . lift . lift . lift ... get/put/s
 A minimal definition of MonadReader consists of:
 1. `ask` or `reader` (which is just `asks`)
 2. `local`
+
+[Helpful slides](https://upload.wikimedia.org/wikiversity/en/d/da/Monad.12.A.MonadReader.20180821.pdf)

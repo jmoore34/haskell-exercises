@@ -2,7 +2,7 @@
 {-# HLINT ignore "Use lambda-case" #-}
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
 {-# LANGUAGE UndecidableInstances #-}
-module MonadTransformers.MaybeT (MaybeT, lift) where
+module MonadTransformers.MaybeT (MaybeT(..), lift, runMaybeT) where
 import Control.Monad.State (MonadState (..))
 
 -- MaybeT :: (* -> *) -> * -> *
